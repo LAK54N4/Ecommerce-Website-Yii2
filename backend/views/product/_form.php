@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 //use yii\widgets\ActiveForm;
 use yii\bootstrap4\ActiveForm;
+use dosamigos\ckeditor\CKEditor;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Product */
@@ -15,13 +16,30 @@ use yii\bootstrap4\ActiveForm;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
+    <?= $form->field($model, 'description')->widget(CKEditor::class, [
+        'options' => ['rows' => 6],
+        'preset' => 'basic'
+    ]) ?>
 
-    <?= $form->field($model, 'image')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'image', [
+        'template' => '
+                <div class="custom-file">
+                    {input}
+                    {label}
+                    {error}
+                </div>
+            </div>
+        ',
+        'labelOptions' => ['class' => 'custom-file-label'],
+        'inputOptions' => ['class' => 'custom-file-input']
+    ])->textInput(['type' => 'file']) ?>
 
-    <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'price')->textInput([
+        'maxlength' => true,
+        'type' => 'number'
+        ]) ?>
 
-    <?= $form->field($model, 'status')->textInput() ?>
+    <?= $form->field($model, 'status')->checkbox() ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
