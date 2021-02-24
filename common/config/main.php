@@ -9,5 +9,14 @@ return [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
+    'formatter' => [
+        'class' => 'yii\i18n\Formatter',
+        'locale' => 'id_ID',
+        'timeZone' => 'Asia/Jakarta',
+        'dateFormat' => 'dd-MM-yyyy hh:mm:ss',
+        'thousandSeparator' => '.',
+        'decimalSeparator' => ',',
+        'currencyCode' => 'Rp',
+        ],
     ],
 ];
