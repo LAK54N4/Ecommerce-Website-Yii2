@@ -160,11 +160,18 @@ class Product extends \yii\db\ActiveRecord
         return $ok;
     }
 
-    public function getImageUrl() {
-        if($this->image) {
-            return Yii::$app->params['frontendUrl'].'/storage'.$this->image;    
+    public function getImageUrl() 
+    {
+        return self::formatImageUrl($this->image);
+    }
+
+    public static function formatImageUrl($imagePath)
+    {
+        if ($imagePath) {
+            return Yii::$app->params['frontendUrl'] . '/storage' . $imagePath;
         }
-        return Yii::$app->params['frontendUrl'].'/img/no-image-icon.png';
+
+        return Yii::$app->params['frontendUrl'] . '/img/no_image_available.png';
     }
 
     /** 
