@@ -25,23 +25,6 @@ class CartItem extends \yii\db\ActiveRecord
         return '{{%cart_items}}';
     }
 
-    public static function getTotalQuantityForUser($currUserId)
-    {
-        if (isGuest()) {
-            $cartItems = \Yii::$app->session->get(CartItem::SESSION_KEY, []);
-            $sum = 0;
-            foreach ($cartItems as $cartItem) {
-                $sum += $cartItem['quantity'];
-            }
-        } else {
-            $sum = CartItem::findBySql(
-                "SELECT SUM(quantity) FROM cart_items WHERE created_by = :userId", ['userId' => $currUserId]
-            )->scalar();
-        }
-
-        return $sum;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -81,7 +64,7 @@ class CartItem extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Product]].
      *
-     * @return \yii\db\ActiveQuery|\common\models\query\ProductsQuery
+     * @return \yii\db\ActiveQuery|\common\models\query\ProductQuery
      */
     public function getProduct()
     {
