@@ -13,7 +13,7 @@ use Yii;
  * @property int|null $created_by
  *
  * @property User $createdBy
- * @property Products $product
+ * @property Product $product
  */
 class CartItem extends \yii\db\ActiveRecord
 {
@@ -25,6 +25,23 @@ class CartItem extends \yii\db\ActiveRecord
         return '{{%cart_items}}';
     }
 
+    public static function getTotalQuantityForUser($currUserId)
+    {
+        if (isGuest()) {
+            $cartItems = \Yii::$app->session->get(CartItem::SESSION_KEY, []);
+            $sum = 0;
+            foreach ($cartItems as $cartItem) {
+                $sum += $cartItem['quantity'];
+            }
+        } else {
+            $sum = CartItem::findBySql(
+                "SELECT SUM(quantity) FROM cart_items WHERE created_by = :userId", ['userId' => $currUserId]
+            )->scalar();
+        }
+
+        return $sum;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -34,7 +51,7 @@ class CartItem extends \yii\db\ActiveRecord
             [['product_id', 'quantity'], 'required'],
             [['product_id', 'quantity', 'created_by'], 'integer'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Products::className(), 'targetAttribute' => ['product_id' => 'id']],
+            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
         ];
     }
 
@@ -68,7 +85,7 @@ class CartItem extends \yii\db\ActiveRecord
      */
     public function getProduct()
     {
-        return $this->hasOne(Products::className(), ['id' => 'product_id']);
+        return $this->hasOne(Product::className(), ['id' => 'product_id']);
     }
 
     /**
