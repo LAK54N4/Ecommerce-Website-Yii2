@@ -10,8 +10,8 @@ use Yii;
  * @property int $id
  * @property float $total_price
  * @property int $status
- * @property string $firstName
- * @property string $lastName
+ * @property string $firstname
+ * @property string $lastname
  * @property string $email
  * @property int $transaction_id
  * @property int|null $created_at
@@ -24,6 +24,7 @@ use Yii;
  */
 class Order extends \yii\db\ActiveRecord
 {
+    const STATUS_DRAFT = 0;
     /**
      * {@inheritdoc}
      */
@@ -38,7 +39,7 @@ class Order extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['total_price', 'status', 'firstName', 'lastName', 'email', 'transaction_id'], 'required'],
+            [['total_price', 'status', 'firstname', 'lastname', 'email', 'transaction_id'], 'required'],
             [['total_price'], 'number'],
             [['status', 'transaction_id', 'created_at', 'created_by'], 'integer'],
             [['firstName', 'lastName'], 'string', 'max' => 45],
@@ -57,8 +58,8 @@ class Order extends \yii\db\ActiveRecord
             'id' => 'ID',
             'total_price' => 'Total Price',
             'status' => 'Status',
-            'firstName' => 'First Name',
-            'lastName' => 'Last Name',
+            'firstname' => 'First Name',
+            'lastname' => 'Last Name',
             'email' => 'Email',
             'transaction_id' => 'Transaction ID',
             'created_at' => 'Created At',

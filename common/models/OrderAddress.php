@@ -36,7 +36,7 @@ class OrderAddress extends \yii\db\ActiveRecord
             [['order_id'], 'integer'],
             [['address', 'city', 'state', 'country', 'zipcode'], 'string', 'max' => 255],
             [['order_id'], 'unique'],
-            [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Orders::className(), 'targetAttribute' => ['order_id' => 'id']],
+            [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::className(), 'targetAttribute' => ['order_id' => 'id']],
         ];
     }
 
@@ -62,7 +62,7 @@ class OrderAddress extends \yii\db\ActiveRecord
      */
     public function getOrder()
     {
-        return $this->hasOne(Orders::className(), ['id' => 'order_id']);
+        return $this->hasOne(Order::className(), ['id' => 'order_id']);
     }
 
     /**
