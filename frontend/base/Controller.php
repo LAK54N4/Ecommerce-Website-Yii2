@@ -14,7 +14,7 @@ class Controller extends \yii\web\Controller
 {
     public function beforeAction($action)
     {
-        if(\Yii::$app->user->isGuest) {
+        if(isGuest()) {
             $cartItems = \Yii::$app->session->get(CartItem::SESSION_KEY, []);
             $sum = 0;
             foreach ($cartItems as $cartItem) {
