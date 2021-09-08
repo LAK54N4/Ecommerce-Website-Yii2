@@ -13,10 +13,14 @@ use yii\bootstrap4\ActiveForm;
 
 <?php $form = ActiveForm::begin([
     'id' => 'checkout-form',
-]); ?>
+    'action' => ['/cart/submit-order']
+    ]);
+?>
 
 <div class="row">
     <div class="col">
+
+
         <div class="card mb-3">
             <div class="card-header">
                 <h5>Account information</h5>
@@ -83,7 +87,7 @@ use yii\bootstrap4\ActiveForm;
                 <table class="table">
                     <tr>
                         <td>Total Items</td>
-                        <td class="text-right"><?php echo $productQuantity ?></td>
+                        <td colspan="2"><?php echo $productQuantity ?>Products</td>
                     </tr>
                     <tr>
                         <td>Total Price</td>
@@ -96,6 +100,7 @@ use yii\bootstrap4\ActiveForm;
                 <p class="text-right mt-3">
                     <button class="btn btn-secondary">Checkout</button>
                 </p>
+                
             </div>
         </div>
     </div>
