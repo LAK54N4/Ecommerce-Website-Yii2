@@ -15,7 +15,8 @@ use yii\db\Exception;
  * @property string $firstname
  * @property string $lastname
  * @property string $email
- * @property int $transaction_id
+ * @property string|null  $transaction_id
+ * @property string|null  $paypal_order_id
  * @property int|null $created_at
  * @property int|null $created_by
  *
@@ -49,7 +50,7 @@ class Order extends \yii\db\ActiveRecord
             [['total_price'], 'number'],
             [['status', 'transaction_id', 'created_at', 'created_by'], 'integer'],
             [['firstName', 'lastName'], 'string', 'max' => 45],
-            [['email'], 'string', 'max' => 255],
+            [['email','transaction_id','paypal_order_id'], 'string', 'max' => 255],
             [['created_at'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['created_at' => 'id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
         ];
@@ -68,6 +69,7 @@ class Order extends \yii\db\ActiveRecord
             'lastname' => 'Last Name',
             'email' => 'Email',
             'transaction_id' => 'Transaction ID',
+            'paypal_order_id' => 'Paypal Order ID',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
         ];

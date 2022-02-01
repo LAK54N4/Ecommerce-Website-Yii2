@@ -238,18 +238,51 @@ class CartController extends \frontend\base\Controller
         if(!$order){
             throw new NotFoundHttpException();
         } 
-        $order-> transaction_id = Yii::$app->request->post('transactionId');
         
+        $req = Yii::$app->request;
+        $paypalOrderId = $req->post('orderID');
+        $exists = Order::find()->andWhere(['paypal_order_id' => $paypalOrderId])->exists();
+        //$order-> transaction_id = Yii::$app->request->post('transactionId');
+        //$exists = Order::find()->andWhere(['transaction_id' => $order->transaction_id])->exists();
+        if($exists) {
+            throw new BadRequestHttpException();
+        }
+        // 9:31:00
+        $environment = new SandboxEnvironment(Yii::$app->params['paypalClientId'], Yii::$app->params['paypalSecret']);
+        $client = new PayPalHttpClient($environment);
+
+        //$client->execute(new AuthorizationsGetRequest($order->transaction_id));
+        $response = $client->execute(new OrdersGetRequest($paypalOrderId));
+
+        // @TODO Save the response information in logs
+        if ($response->statusCode === 200) {
+            $order->paypal_order_id = $paypalOrderId;
+            $order-> status = $status === 'COMPLETED' ? Order::STATUS_COMPLETED : ORDER::STATUS_FAILURED;
+            $paidAmount = 0;
+            foreach ($response->result->purchase_units as $purchase_unit) {
+                if ($purchase_unit->amount->currency_code === 'USD') {
+                    $paidAmount += $purchase_unit->amount->value;
+                }
+            }
+            if ($paidAmount === (float)$order->total_price && $response->result->status === 'COMPLETED') {
+                $order->status = Order::STATUS_COMPLETED;
+            }
+
+            $order->transaction_id = $response->result->purchase_units[0]->payment->captures[0]->id;
+            if  ($order->save()) {
+                return [
+                    'success' => true
+                ];                            
+            }
+        }
+
         /**
          * todo validate the transaction ID. It must not be used and it must be valid transaction ID in paypal.
          *   
-         **/ 
+         **/         
+
+        //$status = Yii::$app->request->post('status');
         
         
-
-        $status = Yii::$app->request->post('status');
-        $order-> status = $status === 'COMPLETED' ? Order::STATUS_COMPLETED : ORDER::STATUS_FAILURED;
-
-
     }
 }
